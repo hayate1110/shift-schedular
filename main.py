@@ -1,54 +1,38 @@
-from schedular import solve_schedule
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-def main():
-    employees = ["A", "B", "C", "D", "E"]
+from scheduler import solve_schedule
 
-    days = range(7)
 
-    shifts = ["早番", "遅番"]
+app = FastAPI()
 
-    availability = {
-        # employee: 勤務可能な日
-        "A": [0, 1, 2, 3, 4],
-        "B": [0, 2, 4, 5, 6],
-        "C": [1, 2, 3, 4, 5],
-        "D": [0, 1, 5, 6],
-        "E": [0, 1, 2, 3, 4, 5, 6],
-    }
 
-    required_staff = {
-        "早番": 2,
-        "遅番": 2,
-    }
+class ScheduleRequest(BaseModel):
+    employees: list[str]
+    days: list[int]
+    shifts: list[str]
+    availability: dict[str, list[int]]
+    required_staff: dict[str, int]
+
+
+@app.post("/generate")
+def generate_schedule(request: ScheduleRequest):
 
     result = solve_schedule(
-        employees=employees,
-        days=days,
-        shifts=shifts,
-        availability=availability,
-        required_staff=required_staff,
+        employees=request.employees,
+        days=request.days,
+        shifts=request.shifts,
+        availability=request.availability,
+        required_staff=request.required_staff,
     )
 
     if result is None:
-        print("条件を満たすシフトは見つかりませんでした。")
-        return
+        return {
+            "success": False,
+            "message": "条件を満たすシフトを生成できませんでした。",
+        }
 
-    schedule = result["schedule"]
-
-    for day in days:
-        print(f"\nDay {day}")
-
-        for shift in shifts:
-            assigned = schedule[day][shift]["employees"]
-            shortage = schedule[day][shift]["shortage"]
-
-            print(
-                f"  {shift}: {', '.join(assigned)} "
-                f"(不足: {shortage}人)"
-            )
-
-    print(f"\n合計不足人数: {result['total_shortage']}人")
-    print(f"\n従業員の勤務日数の標準偏差: {result['standard_deviation']}")
-
-if __name__ == "__main__":
-    main()
+    return {
+        "success": True,
+        **result,
+    }
