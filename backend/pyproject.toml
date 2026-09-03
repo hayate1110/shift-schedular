@@ -7,4 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
     "ortools>=9.15.6755",
+    "pwdlib[argon2]>=0.3.1",
+    "pyjwt>=2.13.0",
+    "sqlalchemy>=2.0.52",
 ]
