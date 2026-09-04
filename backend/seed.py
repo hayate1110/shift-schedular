@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from auth.security import hash_password
-from database import SessionLocal
+from database import Base, SessionLocal, engine
 from models import User
 from dotenv import load_dotenv
 import os
@@ -12,6 +12,9 @@ SEED_ADMIN_USERNAME = os.environ["SEED_ADMIN_USERNAME"]
 SEED_ADMIN_PASSWORD = os.environ["SEED_ADMIN_PASSWORD"]
 
 def seed():
+    # テーブルが存在しなければ作成
+    Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
 
     try:
