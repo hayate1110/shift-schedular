@@ -3,7 +3,13 @@ from sqlalchemy import select
 from auth.security import hash_password
 from database import SessionLocal
 from models import User
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+SEED_ADMIN_USERNAME = os.environ["SEED_ADMIN_USERNAME"]
+SEED_ADMIN_PASSWORD = os.environ["SEED_ADMIN_PASSWORD"]
 
 def seed():
     db = SessionLocal()
@@ -18,8 +24,8 @@ def seed():
             return
 
         user = User(
-            username="admin",
-            password_hash=hash_password("admin123"),
+            username=SEED_ADMIN_USERNAME,
+            password_hash=hash_password(SEED_ADMIN_PASSWORD),
             name="管理者",
             employment_type="full_time",
             role="admin",
