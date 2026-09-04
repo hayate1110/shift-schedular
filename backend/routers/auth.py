@@ -41,8 +41,8 @@ def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # 本番環境ではTrue
-        samesite="lax",
+        secure=True,  # 本番環境ではTrue
+        samesite="none",
         max_age=60 * 60,
     )
 
