@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
 from auth.security import hash_password
-from database import Base, SessionLocal, engine
-from models import User
+from database import SessionLocal, engine
+from models import Base, User
 from dotenv import load_dotenv
 import os
 
